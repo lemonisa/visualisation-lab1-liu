@@ -4,6 +4,7 @@ library(gridExtra)
 
 ## Some initial settings
 senic_path <- 'data/Senic.csv'   # Path to the data file
+SENIC.ref <- "Source: Study on the Efficacy of Nosocomail Infection Control (SENIC)"
 theme_set( theme_bw() )                 # ggplot appearance
 
 
@@ -52,10 +53,18 @@ plot_x8 <- ggplot(senic_data, aes(reorder(X8, -table(X8)[X8]))) +
     theme( aspect.ratio = 1/2 )
 
 
-plot_quali_vars <- grid.arrange(plot_x7, plot_x8, nrow = 2)
+plot_quali_vars <- grid.arrange(
+    plot_x7,
+    plot_x8,
+    nrow = 2,
+    bottom = textGrob(SENIC.ref,
+                      gp = gpar(fontface=1, fontsize=10),
+                      hjust=1,
+                      x=0.98)
+)
 
 
 ## Export
 ## ggsave('senic_x7.pdf', plot_x7)
 ## ggsave('senic_x8.pdf', plot_x8)
-ggsave('qualitative_vars.pdf', plot_quali_vars)
+ggsave('../qualitative_vars.pdf', plot_quali_vars)
