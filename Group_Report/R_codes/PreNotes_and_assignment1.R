@@ -2,8 +2,8 @@
 ## Course   : Visualization
 ## Lab      : 1
 ## Group    : 8
-## 
-## 
+##
+##
 ####################################
 rm(list = ls())
 
@@ -16,5 +16,5 @@ data(Cars93, package = "MASS")
 mydata_1 <- Cars93
 
 
-df1=aggregate(Price~Type, data=mydata_1, FUN=mean) 
+df1=aggregate(Price~Type, data=mydata_1, FUN=mean)
 barplot(df1$Price, names.arg=df1$Type)

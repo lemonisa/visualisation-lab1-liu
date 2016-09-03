@@ -8,33 +8,43 @@ library(scales)
 
 ## Some initial settings
 senic_path <- 'data/Senic.csv'   # Path to the data file
-SENIC.ref <- "Source: Study on the Efficacy of Nosocomail Infection Control (SENIC)"
+SENIC.ref <-
+    "Source: Study on the Efficacy of Nosocomail Infection Control (SENIC)"
 theme_set( theme_bw() )                 # ggplot appearance
 
 
 #### 2.2: Qualitative plots
 senic_data <- read.csv2(senic_path)
-senic_data$X7 <- factor(senic_data$X7, levels=c(1,2), labels=c('Yes', 'No'), ordered = TRUE)
-senic_data$X8 <- factor(senic_data$X8, levels=c(1,2,3,4), labels=c('NE', 'NC', 'S', 'W'))
+senic_data$X7 <- factor(senic_data$X7,
+                        levels=c(1,2),
+                        labels=c('Yes', 'No'),
+                        ordered = TRUE)
+senic_data$X8 <- factor(senic_data$X8,
+                        levels=c(1,2,3,4),
+                        labels=c('NE', 'NC', 'S', 'W'))
 
-senic_column_desc <- list(Obs = 'Identification Number',
-                          X1 = 'Length of Stay',
-                          X2 = 'Age',
-                          X3 = 'Infection Risk',
-                          X4 = 'Routine Culturing Ratio',
-                          X5 = 'Routine Chest X-ray Ratio',
-                          X6 = 'Number of Beds',
-                          X7 = 'Medical School Affiliation',
-                          X8 = 'Region',
-                          X9 = 'Average Daily Census',
-                          X10 = 'Number of Nurses',
-                          X11 = 'Available Facilities & Services')
+senic_column_desc <-
+    list(Obs = 'Identification Number',
+         X1 = 'Length of Stay',
+         X2 = 'Age',
+         X3 = 'Infection Risk',
+         X4 = 'Routine Culturing Ratio',
+         X5 = 'Routine Chest X-ray Ratio',
+         X6 = 'Number of Beds',
+         X7 = 'Medical School Affiliation',
+         X8 = 'Region',
+         X9 = 'Average Daily Census',
+         X10 = 'Number of Nurses',
+         X11 = 'Available Facilities & Services')
 
 ## 2.2: Qualitative plots
 plot_x7 <- ggplot(senic_data, aes(X7)) +
     geom_bar( stat = 'count' ) +
     geom_text( stat = 'count', aes(label=..count..), hjust = -0.5) +
-    ggtitle('Number of Hospitals with and without Medical School Affiliation') +
+    ggtitle(
+        paste('Number of Hospitals with', # Line too long
+              'and without Medical School Affiliation',
+              sep = '') +
     xlab('') +
     ylab('Hospital Count') +
     coord_flip() +
@@ -86,16 +96,21 @@ make_quant_boxplot <- function (colname) {
     outliers.leftpos <- 0.60
     outliers.rightpos <- 1.16
 
-    # Normalizatio factors before passing coordinates to orce field factor for FField library
-    y.fact <- 70 / max(senic_data[ ,colname]) # 70 because y axis should have stronger field
+    ## Normalizatio factors before passing coordinates to orce
+    ## field factor for FField library
+
+    ## 70 because y axis should have stronger field
+    y.fact <- 70 / max(senic_data[ ,colname])
     x.fact <- 100 / outliers.rightpos
 
+
     # Data frame for holding outliers labels data
+    column <- senic_data[ ,colname]
     outliers.frame <-
         data.frame(
             outliers_mask =
-                senic_data[ ,colname] < quantile(senic_data[ ,colname], 0.25) - 1.5 * IQR(senic_data[ ,colname])
-                       | quantile(senic_data[ ,colname], 0.75) + 1.5 * IQR(senic_data[ ,colname]) < senic_data[ ,colname]
+                column < quantile(column, 0.25) - 1.5 * IQR(column)
+                | quantile(column, 0.75) + 1.5 * IQR(column) < column
         )
 
     outliers.frame$outliers =
@@ -118,10 +133,12 @@ make_quant_boxplot <- function (colname) {
             rep(outliers.rightpos, n_outliers - floor(n_outliers / 2) * 2 )
         )
 
-    outliers.frame[outliers.frame$outliers_mask, colname] <- senic_data[outliers.frame$outliers_mask, colname]
+    outliers.frame[outliers.frame$outliers_mask, colname] <-
+        senic_data[outliers.frame$outliers_mask, colname]
 
     outliers.frame$xcoord.t <- outliers.frame$xcoord * x.fact
-    outliers.frame$ycoord.t[outliers.frame$outliers_mask] <- senic_data[outliers.frame$outliers_mask, colname] * y.fact
+    outliers.frame$ycoord.t[outliers.frame$outliers_mask] <-
+        senic_data[outliers.frame$outliers_mask, colname] * y.fact
 
     outliers.frame <- cbind(
         outliers.frame,
@@ -132,10 +149,14 @@ make_quant_boxplot <- function (colname) {
     )
 
     # Detect moved x-coordinate. Kind of a hacky way to posit the labels
-    outliers.frame$x <- ifelse( outliers.frame$x < 1.01 * x.fact, outliers.leftpos, outliers.rightpos )
+    outliers.frame$x <- ifelse( outliers.frame$x < 1.01 * x.fact,
+                                outliers.leftpos,
+                                outliers.rightpos )
     outliers.frame$y <- outliers.frame$y / y.fact
 
-    plot <- ggplot(senic_data, aes_string(x = shQuote(senic_column_desc[[colname]]), y=colname)) +
+    plot <- ggplot(senic_data,
+                   aes_string(x = shQuote(senic_column_desc[[colname]]),
+                              y=colname)) +
         geom_segment(
             data = outliers.frame,
             aes_string(x = "x",
