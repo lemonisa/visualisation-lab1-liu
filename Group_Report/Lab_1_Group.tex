@@ -408,3 +408,41 @@ ggplot(data = subset(mydata_2, ID!=107))+
 
 \end{document}
 
+
+## Assignment 2
+ 
+install.packages(c("ggplot2","gridExtra","grid","ggrepel"))
+library(ggplot2)
+library(ggrepel)
+library(gridExtra)
+library(grid)
+
+#------------- Importing 
+path_assignment_2 <- file.path("/Users","arianbarakat","Desktop","Linköpings Universitet",
+                               "Statistics and Data Mining","Semester 1","Visualization, 732A98",
+                               "Labs","Lab 1","Data","Senic.csv")
+
+mydata_2 <- read.csv2(file = path_assignment_2,header=T)
+
+#------------- Data structure 
+
+# Changing the column/Variable names
+new_column_names <- c("ID","Length_of_stay","Age","Infection_Risk","Routine_Culturing_Ratio",
+"Routine_Chest_Xray_Ratio","nr_of_beds","Med_school_aff","Region","Ave_Daily_Cens",
+"nr_of_nurses","Avail_Fac_Ser")
+
+colnames(mydata_2) <-new_column_names
+
+# classifiying the variable into 'factors'
+
+# Starting of with different labels (Will give better graph output)
+region_labels <- c("1" = "NE", "2" = "NC", "3" = "S", "4" = "W")
+med_school_aff_labels <- c("1" = "Yes", "2" = "No")
+
+mydata_2[,"Region"] <- region_labels[mydata_2[,"Region"]]
+mydata_2[,"Med_school_aff"] <- med_school_aff_labels[mydata_2[,"Med_school_aff"]]
+
+# Classifiying
+mydata_2[,c("ID","Med_school_aff","Region")] <- lapply(mydata_2[,c("ID","Med_school_aff","Region")], as.factor)
+lapply(mydata_2,class)
+
