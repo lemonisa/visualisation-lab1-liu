@@ -12,13 +12,13 @@
 SH        = /bin/bash
 
 # Your Tex files
-TEXFILES  = Lab_1_Group.tex
+TEXFILES  = Lab_1_Group_8.tex
 
 # Your Bib files
 #BIBFILES  = labreport.bib
 
 # The name of your compiled files (x.pdf and x.ps)
-NAME      = Lab_1_Group
+NAME      = Lab_1_Group_8
 
 # The location of your tex compiler
 LATEX     = latex
